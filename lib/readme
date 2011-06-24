@@ -1,0 +1,25 @@
+// Twitter API instructions only
+
+Ti.include('path/to/sha1.js');
+Ti.include('path/to/oauth.js');
+Ti.include('path/to/oauth-adapter.js');
+Ti.include('path/to/twitter_api.js');
+
+if (oa.oAuthAdapter.isAuthorized() != false) {
+	oa.oAuthAdapter.send({
+		url:'http://api.twitter.com/1/account/verify_credentials.json', 
+		parameters:[
+		],
+		method:'GET',
+		onSuccess:function(response){
+			response = JSON.parse(response);	
+			alert(response.screen_name+' authenticated');
+		}
+		});
+}
+
+*** The code has been updated to use the new twitter oauth process PIN ***
+
+You can make donations here if it works for you and you wish to support: 
+http://goo.gl/h4UKN (pay pal link) or via my site:
+http://www.stereoartist.com/projects.php
