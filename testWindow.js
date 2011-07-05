@@ -32,7 +32,7 @@ var t = {
 	},
 	printMessage: function(message, height){
 		Ti.API.info('Print Message to screen');
-		if(height == null) height = 25;
+		if(height === null) {height = 25};
 		if(Ti.Platform.displayCaps.platformWidth > 340) {
 			var fSize = 25;
 			var hAdj = 25;
@@ -131,7 +131,7 @@ var t = {
 			} else {
 				t.signOutButton.title='Sign In';
 			}
-			if (t.tState != false) {
+			if (t.tState !== false) {
 				
 				t.printMessage('***** Twitter tokens present *****');
 	
@@ -160,7 +160,7 @@ var t = {
 			} else {
 				t.signOutButton.title='Sign In';
 			}
-			if (oa.oAuthAdapter.isAuthorized() != false) {
+			if (oa.oAuthAdapter.isAuthorized() !== false) {
 				t.printMessage('***** Twitter tokens present *****');
 	
 				t.printMessage('***** Attempting POST request to Twitter *****');
@@ -193,7 +193,7 @@ var t = {
 		t.signOutButton.addEventListener('click',function(e){
 			if(t.tState === true) {
 				var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'twitter.config');
-        	if (file == null) {
+        	if (file === null) {
             	oa.oAuthAdapter.isAuthorized();
             	t.signOutButton.title='Sign In';
         	}
