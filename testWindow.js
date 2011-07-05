@@ -115,7 +115,7 @@ var t = {
 		t.refreshButton.addEventListener('click',function(){
 			// this just clears the views so you can start from scratch
 				t.sview.remove(t.view);
-				t.win2.remove(t.sview)
+				t.win2.remove(t.sview);
 				t.addViews();
 				t.addtestButtons();
 				t.addButtonListeners();
@@ -171,7 +171,7 @@ var t = {
 						['display_coordinates','true'],
 						['place_id','8ef32ff56ef11c22'],
 						['include_entities',1],
-						['status', 'It\'s now '+d+'. I am Testing that my mobile twitter app is working /cc @ketan @appcelerator']
+						['status', 'It\'s now '+d+'. I am testing that my twitter app using http://goo.gl/sQxUE works #appcelerator']
 					],
 					method:'POST',
 					onSuccess:function(response){
@@ -207,7 +207,7 @@ var t = {
 			
 		});
 	}
-}
+};
 t.init();
 t.printMessage('***** START *****');
 t.printMessage('***** Loading buttons *****');
