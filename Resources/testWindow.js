@@ -32,7 +32,7 @@ var t = {
 	},
 	printMessage: function(message, height){
 		Ti.API.info('Print Message to screen');
-		if(height === null) {height = 25};
+		if(height == null) {height = 25;}
 		if(Ti.Platform.displayCaps.platformWidth > 340) {
 			var fSize = 25;
 			var hAdj = 25;
