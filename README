@@ -1,0 +1,20 @@
+This example app contains the twitter oAuth library.
+
+the app example sends debug messages onto the screen as certain events occur, you can also test various twitter options.
+
+1) Sign In - loads a webview up
+2) close/cancel buttons on this modal window
+3) PIN retrieval and local saving of return tokens for authenticated requests
+4) POST a test status update 
+5) GET verify credentials (data on the logged in user)
+6) CLEAR / destroy the local token file.
+7) API requests work on both android and iOS
+8) 1.7.2 tested
+
+KNOWN ISSUES
+============
+
+Queueing does not work, you have to sign in first then use the API calls.
+Clearing local token file data will then require you to restart, unti then API calls still occur
+callbacks and code structure needs to nbe reviewed and tightened
+printMessage function is a little skewey in android.
