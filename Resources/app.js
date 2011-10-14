@@ -1,4 +1,4 @@
-Ti.App.Properties.setString("version",'0.3.3');
+Ti.App.Properties.setString("version",'0.5.2');
 var shortDescription = 'oAuth Test';
 var startWin = Ti.UI.createWindow({
 	title: shortDescription,
@@ -14,7 +14,7 @@ var tab1 = Ti.UI.createTab({
 
 
 var aboutTest = Ti.UI.createWindow({
-title: 'About the test'	
+title: 'Ti Twitter POST/GET'	
 });
 var tab2 = Ti.UI.createTab({
 	title: 'About',
@@ -22,10 +22,10 @@ var tab2 = Ti.UI.createTab({
 });
 var version = Ti.App.Properties.getString("version");
 // Create HTML to populate about window, describe the test and what the app is trying to achieve
-var htmlContent = '<h2>Outline</h2>';
-htmlContent += '<p>Creating a simple test app to check functionality between android and iOS</p>';
+var htmlContent = '<div style="font: normal normal 1em Helvetica, sans-serif;"><h2>Library for iOS &amp; Android</h2>';
+htmlContent += '<p>Creating a simple test app to check api calls + android and iOS behaviour</p>';
 htmlContent += '<p>Use the <strong>Run Test</strong> tab below to run the tests</p>';
-htmlContent += '<h2>Revisions</h2><p>Currently running version : <strong>'+version+'</strong></p>';
+htmlContent += '<h2>Revisions</h2><p>Currently using version : <strong>'+version+'</strong></p></div>';
 
 var wv = Ti.UI.createWebView({
 	width: '100%',
