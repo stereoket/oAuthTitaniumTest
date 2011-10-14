@@ -1,24 +1,57 @@
 // Twitter API instructions only
 
-Ti.include('path/to/sha1.js');
-Ti.include('path/to/oauth.js');
-Ti.include('path/to/oauth-adapter.js');
-Ti.include('path/to/twitter_api.js');
+create an init() function of some sort to load up all of the dependencies
+Ti.include('lib/sha1.js');
+Ti.include('lib/oauth.js');
+Ti.include('lib/oauth_adapter.js');
+Ti.include('lib/twitter_api.js');
 
-if (oa.oAuthAdapter.isAuthorized() != false) {
-	oa.oAuthAdapter.send({
-		url:'http://api.twitter.com/1/account/verify_credentials.json', 
-		parameters:[
-		],
-		method:'GET',
-		onSuccess:function(response){
-			response = JSON.parse(response);	
-			alert(response.screen_name+' authenticated');
-		}
-		});
-}
+You can set this up any way you feel fit, and store them in different directories. The order of loading is important.
 
-*** The code has been updated to use the new twitter oauth process PIN ***
+This version of the script is still a little rough and can do with some tidying up.
+
+twitter_api.js requires your secret and key information.
+
+Main Issues:
+===========
+
+Android still shows a save password dialog box underneath the web view - I have altered the height and position of the webview 
+for android so you can see this. Fixes and alternatives will need to be found.
+
+GET & POST both work
+Web Pin scraping method used to autehnticate, although there are other ways which I will ecplore in time.
+process queue does not work, so you will need to authenticate and then use the api calls. I will figure out how best to queue
+the calls up and update this script to streamline its behaviour.
+
+
+The best method of sending a POST or GET is to run a check for the tokens file if found then set up a send request in the following format:
+
+eg. POST (Status Update)
+
+oa.oAuthAdapter.send({
+	url:'https://api.twitter.com/1/statuses/update.json', 
+	parameters:[
+		['display_coordinates','true'],
+		['place_id','8ef32ff56ef11c22'],
+		['include_entities',1],
+		['status', 'It\'s now '+d+'. Testing twitter mobile app using http://goo.gl/sQxUE on '+ Ti.Platform.name +' #appcelerator']
+	],
+	method:'POST',
+	onSuccess:function(response){
+		rText = JSON.parse(response.responseText);
+	},
+	onError:function(response){
+		alert(response.errorMessage);
+		rText = JSON.parse(response.responseText);
+	}
+});
+
+
+TO send a GET request, just change the method from 'POST' to 'GET' - to understand this further, please look at the testWindow.js file.
+
+You will want to set up a function or callback from within the onSuccess events so that you can manipulate the return data.
+
+
 
 You can make donations here if it works for you and you wish to support: 
 http://goo.gl/h4UKN (pay pal link) or via my site:
