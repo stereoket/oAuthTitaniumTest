@@ -18,3 +18,8 @@ Queueing does not work, you have to sign in first then use the API calls.
 Clearing local token file data will then require you to restart, unti then API calls still occur
 callbacks and code structure needs to nbe reviewed and tightened
 printMessage function is a little skewey in android.
+
+The core library which is in another github project has not yet been brought up to date with this test app, I will decide if it should be maintained
+seperately.
+
+Ketan Majmudar
