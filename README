@@ -2,6 +2,8 @@ This example app contains the twitter oAuth library.
 
 the app example sends debug messages onto the screen as certain events occur, you can also test various twitter options.
 
+You are required to add the token and secret from your twitter app in the /lib/twitter_api.js file.
+
 1) Sign In - loads a webview up
 2) close/cancel buttons on this modal window
 3) PIN retrieval and local saving of return tokens for authenticated requests

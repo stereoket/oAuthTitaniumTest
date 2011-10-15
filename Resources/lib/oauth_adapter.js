@@ -231,7 +231,8 @@ var OAuthAdapterNew = function(pConsumerSecret, pConsumerKey, pSignatureMethod, 
           Ti.API.debug('destroyAuthorizeUI:webView.removeEventListener');
           webView.removeEventListener('load', authorizeUICallback);
           Ti.API.debug('destroyAuthorizeUI:window.close()');
-			window.close();
+			if(Ti.Platform.osname !== 'android'){ window.close();}
+			else {window.hide();}
         } catch(ex) {
           Ti.API.debug('Cannot destroy the authorize UI. Ignoring.');
         }
@@ -288,8 +289,10 @@ var OAuthAdapterNew = function(pConsumerSecret, pConsumerKey, pSignatureMethod, 
 	      }
     };
 
-    this.createWindow = function (){
-      var w = Ti.UI.createWindow({
+    this.setupWindow = function(childContent){
+      if(!window || null == window){
+
+        window = Ti.UI.createWindow({
       	title: 'Twitter Authentication',
         top: 0,
         height: '100%',
@@ -300,18 +303,14 @@ var OAuthAdapterNew = function(pConsumerSecret, pConsumerKey, pSignatureMethod, 
       });
       
       
-      w.open({modal: true});
-      w.addEventListener('close', function(e){
-      	w = null;
+      
+      window.addEventListener('close', function(e){
+      	window = null;
       });
-      return w;
-    };
-    this.setupWindow = function(childContent){
-      if(!window || null == window){
-        window = this.createWindow();
+      
       }
       window.add(childContent);
-      
+      window.open({modal: true});
       if(Ti.Platform.osname === 'iphone') {
       	
       	var closeButton = Ti.UI.createButton({
