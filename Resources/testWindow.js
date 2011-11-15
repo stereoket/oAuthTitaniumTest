@@ -167,8 +167,7 @@ var t = {
 				});
 			}
 						 
-			var authCheck = oa.checkAccessTokenFile();
-			if(authCheck === true) {
+			if(oa.TokensPresent === true) {
 				getVerifyCredentials();
 			} else {
 				oa.twitterAuth();
@@ -182,7 +181,7 @@ var t = {
 		t.postButton.addEventListener('click',function(e){
 			// t.tState = oa.oAuthAdapter.isAuthorized();
 			
-			if(oa.checkAccessTokenFile() === true) {
+			if(oa.TokensPresent === true) {
 				t.printMessage('**** Attempting POST request to Twitter ****');
 				var d=new Date();
 				oa.oAuthAdapter.send({
@@ -255,8 +254,3 @@ t.printMessage('**** Loaded api bridge ****');
 t.printMessage('**** Waiting for Button Press ****');
 
 t.setStateButtonText();
-
-
-
-
-

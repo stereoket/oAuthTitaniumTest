@@ -108,15 +108,16 @@ var OAuthAdapterNew = function(pConsumerSecret, pConsumerKey, pSignatureMethod, 
     };
 
     this.loadAccessToken = function(pService){
-        Ti.API.info('Loading access token for service [' + pService + '].');
+        
 
         var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, pService);
         if (!file.exists()) {
         	accessToken = null;
         	accessTokenSecret = null;
-            return;
+			Ti.API.error("could not find token file");
+            return false;
         }
-
+		Ti.API.info('Loading access token for service [' + pService + '].');
         var contents = file.read();
         if (contents == null) {
         	accessToken = null;
@@ -140,30 +141,37 @@ var OAuthAdapterNew = function(pConsumerSecret, pConsumerKey, pSignatureMethod, 
         } else {
         	accessTokenSecret = null;
         }
-
-        Ti.API.debug('Loading access token: done [accessToken:' + accessToken + '][accessTokenSecret:' + accessTokenSecret + '].');
+		
+		if(config.accessTokenSecret != null && config.accessToken != null){
+			Ti.API.info('Access tokens successfully loaded into memory');
+			return true;
+		}
+        
     };
     this.saveAccessToken = function(params){
-		Ti.API.debug('Params [' + JSON.stringify(params)+ '].');
+		// Ti.API.debug('Params [' + JSON.stringify(params)+ '].');
 		var responseParams = OAuth.getParameterMap(params);
-		Ti.API.debug('Params [' + JSON.stringify(responseParams)+ '].');
+		// Ti.API.debug('Params [' + JSON.stringify(responseParams)+ '].');
 		accessToken = responseParams.oauth_token;
 		accessTokenSecret = responseParams.oauth_token_secret;
 		this.accessTokens = ({accessToken: accessToken, accessTokenSecret: accessTokenSecret, service: tokenFilename});
 		
 		
 		
-	 Ti.API.debug('Object passed to save [' + JSON.stringify(this.accessTokens)+ '].');
-        Ti.API.debug('Saving access token [' + this.accessTokens['service'] + '].');
+		// Ti.API.debug('Object passed to save [' + JSON.stringify(this.accessTokens)+ '].');
+        Ti.API.info('Saving access token [' + this.accessTokens['service'] + '].');
         var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, this.accessTokens['service']);
         if (file == null) {
             file = Ti.Filesystem.createFile(Ti.Filesystem.applicationDataDirectory, this.accessTokens['service']);
         }
+        try{
         file.write(JSON.stringify({
             accessToken: this.accessTokens.accessToken,
             accessTokenSecret: this.accessTokens.accessTokenSecret
         }));
-        Ti.API.debug('Saving access token: done.' + this.accessTokens.accessToken + '\n'+this.accessTokens.accessTokenSecret);
+        } catch (e){
+        	Ti.API.error('File Save error: '+e.message);
+        }
     };
 
     // will tell if the consumer is authorized

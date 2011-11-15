@@ -1,7 +1,7 @@
 var oa={};
 (function(){
-	oa.consumerSecret = 'xxxxxx';
-	oa.consumerKey = 'xxxxxx';
+	oa.consumerSecret = 'c6P3JH2Y079N2EsZ0zdlZYx4Eie6pU87Qlkx8aPxGc';
+	oa.consumerKey = '8LZcWWvE0xhNIpuGf2JJg';
 	oa.twitterTokenFilename = 'twitterTokens';
 	oa.oAuthAdapter = new OAuthAdapterNew(
  		oa.consumerSecret,
@@ -60,15 +60,15 @@ oa.twitterLogout = function(){
 } 
 
 oa.checkAccessTokenFile = function(){
- 	 oa.oAuthAdapter.loadAccessToken(oa.twitterTokenFilename);
- 	if(oa.oAuthAdapter.isAuthorized()){
- 		return true;
+	var tokenCheck = oa.oAuthAdapter.loadAccessToken(oa.twitterTokenFilename);
+	Ti.API.info(tokenCheck);
+ 	 if(tokenCheck){
+		oa.TokensPresent = true;
  	} else {
- 		return false;
+ 		oa.TokensPresent = false;
  	}
- 	
- }
-  oa.checkAccessTokenFile();
+};
+
  oa.twitterAuth = function(){
  	
  	// if (oa.authProcess === true) {return};
@@ -128,7 +128,7 @@ oa.checkAccessTokenFile = function(){
  }
 
 
-		
+oa.checkAccessTokenFile();
 	
 })();
 
