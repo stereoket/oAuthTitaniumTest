@@ -148,9 +148,10 @@ var t = {
 		});
 
 		t.getButton.addEventListener('click',function(e){
+			oa.checkAccessTokenFile();
 			t.printMessage('**** GET button clicked ****');
 			// First check for authentication
-			var getVerifyCredentials = function(){
+			if(oa.TokensPresent === true) {
 				t.printMessage('**** Attempting a GET request with Twitter ****');
 				t.printMessage('**** API Call - verify_credentials  ****');
 				oa.oAuthAdapter.send({
@@ -165,13 +166,9 @@ var t = {
 						alert(response.successMessage + response.responseText);
 					}
 				});
-			}
-						 
-			if(oa.TokensPresent === true) {
-				getVerifyCredentials();
 			} else {
 				oa.twitterAuth();
-		}
+			}
 			
 
 				

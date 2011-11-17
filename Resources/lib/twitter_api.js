@@ -1,7 +1,7 @@
 var oa={};
 (function(){
-	oa.consumerSecret = 'c6P3JH2Y079N2EsZ0zdlZYx4Eie6pU87Qlkx8aPxGc';
-	oa.consumerKey = '8LZcWWvE0xhNIpuGf2JJg';
+	oa.consumerSecret = 'xxxxxx';
+	oa.consumerKey = 'xxxxxx';
 	oa.twitterTokenFilename = 'twitterTokens';
 	oa.oAuthAdapter = new OAuthAdapterNew(
  		oa.consumerSecret,
@@ -70,21 +70,6 @@ oa.checkAccessTokenFile = function(){
 };
 
  oa.twitterAuth = function(){
- 	
- 	// if (oa.authProcess === true) {return};
- 	// oa.authProcess = true;
- 	// if(oa.checkAccessTokenFile){return true}
- 		// this function will be called as soon as the application is authorized
-	var receivePin = function() {
- 	// get the access token with the provided pin/oauth_verifier
-		var accessTokens = oa.oAuthAdapter.getAccessToken({
-			pURL: 'https://api.twitter.com/oauth/access_token',
-			requestToken: requestToken, 
-			requestTokenSecret: requestTokenSecret
-		});
-		oa.authProcess = null;
-		oa.checkAccessTokenFile();
-	} 
 
 	var accessor = {
         consumerSecret: oa.consumerSecret,
@@ -92,6 +77,7 @@ oa.checkAccessTokenFile = function(){
     };
 
     var message = oa.oAuthAdapter.createMessage('https://api.twitter.com/oauth/request_token', 'POST');
+    
 	OAuth.setTimestampAndNonce(message);
 	OAuth.setParameter(message, "oauth_timestamp", OAuth.timestamp());
 	OAuth.SignatureMethod.sign(message, accessor);
@@ -103,32 +89,31 @@ oa.checkAccessTokenFile = function(){
 		// authCallback(true);
 		oa.authTokens =  client.responseText;
 		var responseParams = OAuth.getParameterMap(oa.authTokens);
-		requestToken = responseParams.oauth_token;
-		requestTokenSecret = responseParams.oauth_token_secret;
+		oa.requestToken = responseParams.oauth_token;
+		oa.requestTokenSecret = responseParams.oauth_token_secret;
 		Ti.API.info('Status: '+client.status);
-		Ti.API.info('Reponse text: '+ oa.authTokens);
+	//	Ti.API.info('Reponse text: '+ oa.authTokens);
 		setTimeout(function(){
-			// Ti.API.info('Request token from twitter.js settings: ' + client.responseText);
-		    oa.oAuthAdapter.showAuthorizeUI('https://api.twitter.com/oauth/authorize?' + oa.authTokens, receivePin);
+			Ti.API.info('Request tokens from twitter first stage: ' + oa.authTokens);
+		    oa.oAuthAdapter.showAuthorizeUI('https://api.twitter.com/oauth/authorize?' + oa.authTokens);
 		    
-		},4000);
+		},400);
 		
 		} catch(e){
 			alert(e);
 		}
 	};
-	Ti.API.debug(finalUrl+ ' Is the finalURL for auth step 1');
+	//Ti.API.info(finalUrl+ ' Is the finalURL for auth step 1');
     client.open('POST', finalUrl, false);
 	client.setRequestHeader('X-Requested-With',null);
 	// client.setTimeout(3000);
     client.send();	
 	// have to use a settimeout function to allow ANDROID to get the return value to pass onto the next function.
-	
-
  }
 
 
 oa.checkAccessTokenFile();
 	
 })();
+
 

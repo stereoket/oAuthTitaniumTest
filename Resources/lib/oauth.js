@@ -267,7 +267,7 @@ OAuth.setProperties(OAuth, // utility functions
 ,
     setTimestampAndNonce: function setTimestampAndNonce(message) {
         OAuth.setParameter(message, "oauth_timestamp", OAuth.timestamp());
-        OAuth.setParameter(message, "oauth_nonce", OAuth.nonce(6));
+        OAuth.setParameter(message, "oauth_nonce", OAuth.nonce(32));
     }
 ,
     addToURL: function addToURL(url, parameters) {
