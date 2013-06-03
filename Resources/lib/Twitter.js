@@ -2,8 +2,8 @@ var oa = {};
 
 var auth = require('/lib/oauth_adapter');
 var OAuth = auth.OAuth;
-oa.consumerSecret = 'gvSIhBWMN32UDTYKm2NKaqp5TxNS49tJtMmA3uFzYA8';
-oa.consumerKey = 'Y1H7Du5JQAv8zze50aqqFg';
+oa.consumerSecret = 'xxx';
+oa.consumerKey = 'xxx';
 oa.serviceName = 'twitter';
 
 oa.twitterTokenFilename = 'twitterTokens'; // TODO can delete this
