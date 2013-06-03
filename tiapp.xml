@@ -9,7 +9,7 @@
     </deployment-targets>
     <id>uk.co.spiritquest.oauth1</id>
     <name>oAuthLibrary</name>
-    <version>1.0</version>
+    <version>0.6.1</version>
     <publisher>ketan</publisher>
     <url>http://www.spiritquest.co.uk</url>
     <description>not specified</description>
@@ -23,17 +23,8 @@
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
     <guid>66dcc985-58a3-4305-b2b0-5d3af943268d</guid>
-    <iphone>
-        <orientations device="iphone">
-            <orientation>Ti.UI.PORTRAIT</orientation>
-        </orientations>
-        <orientations device="ipad">
-            <orientation>Ti.UI.PORTRAIT</orientation>
-            <orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
-            <orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
-            <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
-        </orientations>
-    </iphone>
-    <android xmlns:android="http://schemas.android.com/apk/res/android"/>
-    <modules/>
+    <sdk-version>3.1.0.GA</sdk-version>
+    <plugins>
+        <plugin version="1.0">ti.alloy</plugin>
+    </plugins>
 </ti:app>

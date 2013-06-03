@@ -1,4 +1,3 @@
-Ti.App.Properties.setString("version",'0.5.2');
 var shortDescription = 'oAuth Test';
 var startWin = Ti.UI.createWindow({
 	title: shortDescription,
@@ -20,7 +19,7 @@ var tab2 = Ti.UI.createTab({
 	title: 'About',
 	window: aboutTest
 });
-var version = Ti.App.Properties.getString("version");
+var version = Ti.App.version;
 // Create HTML to populate about window, describe the test and what the app is trying to achieve
 var htmlContent = '<div style="font: normal normal 1em Helvetica, sans-serif;"><h2>Library for iOS &amp; Android</h2>';
 htmlContent += '<p>Creating a simple test app to check api calls + android and iOS behaviour</p>';
