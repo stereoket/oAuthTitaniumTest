@@ -830,7 +830,7 @@
      client.onerror = failure;
 
      client.open(this.httpMethod, this.requestURL, this.async);
-     if (/android/i.test(Titanium.Platform.osname)) {
+     if (/android/i.test(Ti.Platform.osname)) {
        var post = [],
          p;
        for (p in parameters) {
@@ -851,7 +851,7 @@
      // var persTokens = Ti.App.Properties.getObject('oAuthTokens-' + pService, false);
 
      var persTokens = Ti.App.Properties.getObject('oAuthTokens-' + tokenFilename, false);
-       Ti.API.info('Saved Pers data / : ' + 'oAuthTokens-' + tokenFilename + JSON.stringify(persTokens, null, 2));
+     Ti.API.info('Saved Pers data / : ' + 'oAuthTokens-' + tokenFilename + JSON.stringify(persTokens, null, 2));
 
 
      if (!persTokens) {
@@ -888,26 +888,6 @@
      }
 
    };
-   // this.saveAccessToken = function (params) {
-   //  Ti.API.warn("this.saveAccessToken");
-   //   Ti.API.info('Params [' + JSON.stringify(params, null, 2) + '].');
-   //   var responseParams = OAuth.getParameterMap(params);
-   //   Ti.API.info('Screen Name [' + responseParams.screen_name + '].');
-   //   Ti.App.Properties.setString('screen_name', responseParams.screen_name);
-
-   //   // Ti.API.info('Params [' + JSON.stringify(responseParams)+ '].');
-   //   accessToken = responseParams.oauth_token;
-   //   accessTokenSecret = responseParams.oauth_token_secret;
-   //   this.accessTokens = ({
-   //     accessToken: accessToken,
-   //     accessTokenSecret: accessTokenSecret,
-   //     service: tokenFilename
-   //   });
-   //   Ti.App.Properties.setObject('oAuthTokens-' + tokenFilename, this.accessTokens);
-
-   //   // Ti.API.info('Object passed to save [' + JSON.stringify(this.accessTokens)+ '].');
-   //   // Ti.API.info('Saving access token [' + this.accessTokens['service'] + '].');
-   // };
 
    // will tell if the consumer is authorized
    this.isAuthorized = function () {
@@ -964,32 +944,22 @@
 
    // unloads the UI used to have the user authorize the application
 
-   function destroyAuthorizeUI() {
-     Ti.API.info('destroyAuthorizeUI');
-     // if the window doesn't exist, exit
-     if (window == null) {
+   this.destroyAuthorizeUI = function () {
+     Ti.API.warn('** oAuthAdapter: destroyAuthorizeUI');
+     if (window === null) {
        return;
      };
      // remove the UI
      try {
-       Ti.API.info('destroyAuthorizeUI:webView.removeEventListener');
-       webView.removeEventListener('load', authorizeUICallback);
-       Ti.API.info('destroyAuthorizeUI:window.close()');
-       // setTimeout(function () {
-       //   // oa.checkAccessTokenFile(); // calls the parent function to check and store tokens in memory
-       //   if (destroyAuthorizeUICallback !== null) {
-       //     destroyAuthorizeUICallback();
-       //   }
-       // }, 2500);
-       // Ti.API.info('Checking Tokens again');
+       webView.removeEventListener('load', self.authorizeUICallback);
        window.close();
      } catch (ex) {
-       Ti.API.info('Cannot destroy the authorize UI. Ignoring.');
+       Ti.API.info('Cannot destroy the authorize UI. Ignoring.' + ex.message);
      }
    };
 
    this.getAccessToken = function (params) {
-     Ti.API.info('Get Access Token Process running');
+     Ti.API.warn('** oAuthAdapter: getAccessToken');
      accessor.tokenSecret = params['requestTokenSecret'];
      var message = self.createMessage(params['pURL']);
      message.parameters.push(['oauth_token', params['requestToken']]);
@@ -1007,7 +977,7 @@
      }
 
      function saveAccessToken(e) {
-       Ti.API.warn("method of saveAccessToken");
+       Ti.API.warn('** oAuthAdapter: saveAccessToken');
        Ti.API.info('Params [' + JSON.stringify(e, null, 2) + '].');
        // Ti.API.info('Params [' + JSON.stringify(e) + '].');
        var responseParams = OAuth.getParameterMap(e);
@@ -1033,13 +1003,11 @@
        this.savedTokens = true;
      };
 
-
-
      var client = Ti.Network.createHTTPClient();
      client.onload = function () {
        try {
          var text = client.responseText;
-         // Ti.API.info('*** get access token, Response: ' + text);
+         Ti.API.warn('*** get access token, HTTPClient Response: ' + text);
          processQueue();
          saveAccessToken(client.responseText);
 
@@ -1057,8 +1025,8 @@
 
    // looks for the PIN everytime the user clicks on the WebView to authorize the APP
    // currently works with TWITTER
-   function authorizeUICallback(e) {
-     Ti.API.info('authorizeUILoaded');
+   this.authorizeUICallback = function (e) {
+     Ti.API.warn('** oAuthAdapter: authorizeUICallback');
 
      var browser = e.source;
      var viewport = [];
@@ -1072,11 +1040,11 @@
      browser.evalJS(viewport.join('\n'));
 
      var loc = browser.evalJS('(function (){return location.href})()');
-     Titanium.API.debug('webView location: ' + loc);
+     Ti.API.debug('webView location: ' + loc);
 
      // Twitter service check
      if ('https://api.twitter.com/oauth/authorize' === loc) {
-       Ti.API.warn('oAuth Adapter: Twitter Authorisation');
+       Ti.API.warn('*** oAuth Adapter: Twitter Authorisation');
        setTimeout(function () {
          var sourceCode = webView.evalJS("document.documentElement.innerHTML");
          setTimeout(function () {
@@ -1097,18 +1065,20 @@
 
              var accessTokens = self.getAccessToken({
                pURL: 'https://api.twitter.com/oauth/access_token',
-               requestToken: this.requestToken,
-               requestTokenSecret: this.requestTokenSecret
+               requestToken: self.requestToken,
+               requestTokenSecret: self.requestTokenSecret
              });
+
+             setTimeout(function () {
+               self.destroyAuthorizeUI();
+             }, 3000);
 
              // setTimeout(function(){
              // oa.authProcess = null;
              // oa.checkAccessTokenFile();
              // }, 3000);
 
-             setTimeout(function () {
-               destroyAuthorizeUI();
-             }, 3000);
+
            }
          }, 100); // End of pin timeout
        }, 200); // End of main timout loop
@@ -1193,11 +1163,11 @@
 
    // shows the authorization UI
    this.showAuthorizeUI = function (pUrl, requestTokens) {
-     Titanium.API.debug('showAuthroizeUI');
+     Ti.API.warn('** oAuthAdapter: showAuthroizeUI');
 
      // Need set the authTokens into the module for later reference
-     this.requestToken = requestTokens.requestToken;
-     this.requestTokenSecret = requestTokens.requestTokenSecret;
+     this.requestToken = requestTokens.oauth_token;
+     this.requestTokenSecret = requestTokens.oauth_token_secret;
 
      webView = Ti.UI.createWebView({
        url: pUrl,
@@ -1210,7 +1180,7 @@
        top: 0
      });
 
-     webView.addEventListener('load', authorizeUICallback);
+     webView.addEventListener('load', self.authorizeUICallback);
      this.setupWindow(webView);
    };
 
@@ -1285,7 +1255,7 @@
    };
 
    var self = this;
-   var send = function (params) {
+   this.send = function (params) {
      var pUrl = params.url;
      var pParameters = params.parameters || [];
      var pTitle = params.title;
@@ -1380,7 +1350,7 @@
      Ti.API.info('oAuth POST/GET request Sent to network service');
      return client.responseText;
    };
-   this.send = send;
+
  };
 
  exports.OAuthAdapterNew = OAuthAdapterNew;

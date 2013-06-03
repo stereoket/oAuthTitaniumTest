@@ -6,7 +6,7 @@ var t = {
 		t.win2 = Ti.UI.currentWindow;
 		t.win2.exitOnClose = true;
 		t.win2.backgroundColor = "#336699";
-		t.win2.borderRadius = 10;
+		// t.win2.borderRadius = 10;
 		Ti.API.debug('Using an ' + Ti.Platform.osname + ' device');
 
 		// set scroll view 
@@ -141,13 +141,13 @@ var t = {
 			t.win2.remove(t.sview);
 			t.addViews();
 			t.sview.layout = 'vertical';
-			var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, oa.twitterTokenFilename);
-			Ti.API.info(file);
-			if (file == null) {
-				oa.twitterAuth();
+			var storedData = Ti.App.Properties.getObject('oAuthTokens-' + oa.serviceName, null);
+
+			if (storedData === null) {
+				Twitter.auth();
 				// t.signOutButton.title='Sign In';
 			} else {
-				file.deleteFile();
+				Ti.App.Properties.removeProperty('oAuthTokens-' + oa.serviceName);
 				t.printMessage('**** Deleted access token ****');
 			}
 
@@ -155,7 +155,7 @@ var t = {
 		});
 
 		t.getButton.addEventListener('click', function (e) {
-			oa.checkAccessTokenFile();
+			Twitter.checkAccessTokenFile();
 			t.printMessage('**** GET button clicked ****');
 			// First check for authentication
 			if (oa.TokensPresent === true) {
@@ -173,7 +173,7 @@ var t = {
 					}
 				});
 			} else {
-				oa.twitterAuth();
+				Twitter.auth();
 			}
 
 
@@ -208,7 +208,7 @@ var t = {
 					}
 				});
 			} else {
-				oa.twitterAuth();
+				Twitter.auth();
 			}
 			// t.printMessage('**** Current twitter auth state: '+ t.tState +' ****');
 			// if(t.tState === true) {
