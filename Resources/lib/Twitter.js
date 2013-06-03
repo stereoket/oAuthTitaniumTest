@@ -2,11 +2,12 @@ var oa = {};
 
 var auth = require('/lib/oauth_adapter');
 var OAuth = auth.OAuth;
-oa.consumerSecret = 'jny9vWw1fRlYOfhWnUKNARUg7SigPhPFl4Vg679h0';
-oa.consumerKey = 'TcAMphZqskYGaeoK1ABaWw';
+oa.consumerSecret = 'gvSIhBWMN32UDTYKm2NKaqp5TxNS49tJtMmA3uFzYA8';
+oa.consumerKey = 'Y1H7Du5JQAv8zze50aqqFg';
 oa.serviceName = 'twitter';
 
-oa.twitterTokenFilename = 'twitterTokens';
+oa.twitterTokenFilename = 'twitterTokens'; // TODO can delete this
+
 oa.oAuthAdapter = new auth.OAuthAdapterNew(
 	oa.consumerSecret,
 	oa.consumerKey,
@@ -110,7 +111,7 @@ var auth = function () {
 			//	Ti.API.info('Reponse text: '+ oa.authTokens);
 			setTimeout(function () {
 				Ti.API.info('Request tokens from twitter first stage: ' + oa.authTokens);
-				oa.oAuthAdapter.showAuthorizeUI('https://api.twitter.com/oauth/authorize?' + oa.authTokens);
+				oa.oAuthAdapter.showAuthorizeUI('https://api.twitter.com/oauth/authorize?' + oa.authTokens, responseParams);
 
 			}, 400);
 

@@ -808,6 +808,8 @@
    var webView = null;
    var receivePinCallback = null;
 
+
+
    var HttpClientWrapper = function () {
      this.httpMethod = 'POST';
      this.requestURL = '';
@@ -989,7 +991,7 @@
    this.getAccessToken = function (params) {
      Ti.API.info('Get Access Token Process running');
      accessor.tokenSecret = params['requestTokenSecret'];
-     var message = oa.oAuthAdapter.createMessage(params['pURL']);
+     var message = self.createMessage(params['pURL']);
      message.parameters.push(['oauth_token', params['requestToken']]);
      message.parameters.push(['oauth_verifier', pin]);
 
@@ -1055,7 +1057,7 @@
 
    // looks for the PIN everytime the user clicks on the WebView to authorize the APP
    // currently works with TWITTER
-   var authorizeUICallback = function (e) {
+   function authorizeUICallback(e) {
      Ti.API.info('authorizeUILoaded');
 
      var browser = e.source;
@@ -1073,7 +1075,7 @@
      Titanium.API.debug('webView location: ' + loc);
 
      // Twitter service check
-     if ('https://api.twitter.com/oauth/authorize' == loc) {
+     if ('https://api.twitter.com/oauth/authorize' === loc) {
        Ti.API.warn('oAuth Adapter: Twitter Authorisation');
        setTimeout(function () {
          var sourceCode = webView.evalJS("document.documentElement.innerHTML");
@@ -1082,7 +1084,8 @@
            var reg = /(<code\b[^>]*>)([0-9]+)(<\/code>)/gi;
            var ar = reg.exec(sourceCode);
            // var pinMatch = sourceCode.match();
-           // Ti.API.info(ar[2]+ ' array match');
+           Ti.API.info('PIN code array match check');
+           Ti.API.info(JSON.stringify(ar[2], null, 2));
            // Ti.API.info(ar+ ' full match');
            if (ar[2]) {
              pin = ar[2];
@@ -1092,10 +1095,10 @@
              // Ti.API.info('Got PIN, now get access tokens:' + oa.requestToken + oa.requestTokenSecret);
              // get the access token with the provided pin/oauth_verifier
 
-             var accessTokens = oa.oAuthAdapter.getAccessToken({
+             var accessTokens = self.getAccessToken({
                pURL: 'https://api.twitter.com/oauth/access_token',
-               requestToken: oa.requestToken,
-               requestTokenSecret: oa.requestTokenSecret
+               requestToken: this.requestToken,
+               requestTokenSecret: this.requestTokenSecret
              });
 
              // setTimeout(function(){
@@ -1189,10 +1192,12 @@
    };
 
    // shows the authorization UI
-   this.showAuthorizeUI = function (pUrl) {
+   this.showAuthorizeUI = function (pUrl, requestTokens) {
      Titanium.API.debug('showAuthroizeUI');
-     //         receivePinCallback = pReceivePinCallback;
-     // Ti.API.info('PIn Callback:' + receivePinCallback);
+
+     // Need set the authTokens into the module for later reference
+     this.requestToken = requestTokens.requestToken;
+     this.requestTokenSecret = requestTokens.requestTokenSecret;
 
      webView = Ti.UI.createWebView({
        url: pUrl,
