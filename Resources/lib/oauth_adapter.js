@@ -999,7 +999,7 @@
        Ti.App.Properties.setObject('oAuthTokens-' + tokenFilename, this.accessTokens);
        var storedData = Ti.App.Properties.getObject('oAuthTokens-' + tokenFilename, null);
        Ti.API.info('Saved Pers data / : ' + 'oAuthTokens-' + tokenFilename + JSON.stringify(storedData, null, 2));
-
+       processQueue();
        this.savedTokens = true;
      };
 
@@ -1008,11 +1008,10 @@
        try {
          var text = client.responseText;
          Ti.API.warn('*** get access token, HTTPClient Response: ' + text);
-         processQueue();
          saveAccessToken(client.responseText);
 
        } catch (e) {
-         Ti.API.info(e.message);
+         Ti.API.warn(e.message);
        }
      };
 
@@ -1186,13 +1185,11 @@
 
 
 
-   var processQueue = function () {
-     // Ti.API.info('Processing queue.');
+   var processQueue = function () {   
      while ((q = actionsQueue.shift()) != null) {
-       send(q);
+       self.send(q);
+       Ti.API.warn('** oauthAdapter: Processing queue.');
      }
-
-     Ti.API.info('Processing queue: done.');
    };
    var oauthParams = 'OAuth realm,oauth_version,oauth_consumer_key,oauth_nonce,oauth_signature,oauth_signature_method,oauth_timestamp,oauth_token'.split(',');
 
@@ -1254,7 +1251,7 @@
      return 'OAuth ' + header.join(', ');
    };
 
-   var self = this;
+   
    this.send = function (params) {
      var pUrl = params.url;
      var pParameters = params.parameters || [];
@@ -1262,6 +1259,7 @@
      var pMethod = params.method || 'POST';
      var resultByXML = params.resultByXML || false;
      var stickOAuthParam = params.stickOAuthParam || false;
+     var contentType = params.contentType || false;
 
      Ti.API.info('Sending a message to the service at [' + pUrl + '] with the following params: ' + JSON.stringify(pParameters));
 
@@ -1297,9 +1295,10 @@
      //		client.setTimeout(25000);
      client.onerror = function (e) {
        if (params.onError) {
-         Ti.API.error('Error Returned from Server');
+         Ti.API.error('Error Returned from Server' + JSON.stringify(this, null, 2));
+
          var httpResponse = {
-           errorMessage: JSON.parse(client.responseText).error,
+           errorMessage: client.responseText,
            httpStatus: client.status,
            responseText: client.responseText
          };
@@ -1346,11 +1345,15 @@
      } else {
        client.setRequestHeader('Content-Type', "application/x-www-form-urlencoded");
      };
+     if (contentType) {
+       Ti.API.warn('Setting custom Content Type');
+       client.setRequestHeader('Content-Type', contentType);
+     }
      client.send();
      Ti.API.info('oAuth POST/GET request Sent to network service');
      return client.responseText;
    };
-
+   var self = this;
  };
 
  exports.OAuthAdapterNew = OAuthAdapterNew;
