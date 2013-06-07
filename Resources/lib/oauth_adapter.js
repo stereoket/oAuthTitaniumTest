@@ -883,7 +883,7 @@
 
      if (persTokens.accessTokenSecret != null && persTokens.accessToken != null) {
        Ti.API.info('Access tokens successfully loaded into memory');
-       oa.TokensPresent = true;
+       this.TokensPresent = true;
        return true;
      }
 
@@ -1185,7 +1185,7 @@
 
 
 
-   var processQueue = function () {   
+   var processQueue = function () {
      while ((q = actionsQueue.shift()) != null) {
        self.send(q);
        Ti.API.warn('** oauthAdapter: Processing queue.');
@@ -1251,7 +1251,7 @@
      return 'OAuth ' + header.join(', ');
    };
 
-   
+
    this.send = function (params) {
      var pUrl = params.url;
      var pParameters = params.parameters || [];
@@ -1260,6 +1260,9 @@
      var resultByXML = params.resultByXML || false;
      var stickOAuthParam = params.stickOAuthParam || false;
      var contentType = params.contentType || false;
+     var userAgent = params.userAgent || false;
+     var sendBlob = params.sendBlob || false;
+     var blobData = params.blobData || false;
 
      Ti.API.info('Sending a message to the service at [' + pUrl + '] with the following params: ' + JSON.stringify(pParameters));
 
@@ -1292,7 +1295,11 @@
 
      var client = Ti.Network.createHTTPClient();
      Ti.API.info('Network client for sending oAuth POST/GET request');
-     //		client.setTimeout(25000);
+
+     client.onreadystatechange = function (e) {
+       Ti.API.info("*** oAuth Adapter: HTTP STATE CHANGE: " + client.readyState);
+     }
+
      client.onerror = function (e) {
        if (params.onError) {
          Ti.API.error('Error Returned from Server' + JSON.stringify(this, null, 2));
@@ -1349,7 +1356,16 @@
        Ti.API.warn('Setting custom Content Type');
        client.setRequestHeader('Content-Type', contentType);
      }
-     client.send();
+     // if (contentType) {
+     //   Ti.API.warn('Setting custom Content Type');
+     //   client.setRequestHeader('Content-Type', contentType);
+     // }
+     if (sendBlob) {
+       client.send(blobData);
+     } else {
+       client.send();
+     }
+
      Ti.API.info('oAuth POST/GET request Sent to network service');
      return client.responseText;
    };
